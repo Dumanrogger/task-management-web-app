@@ -11,4 +11,5 @@ public interface TaskService {
     TaskDto createTask(CreateOrUpdateTaskRequest request);
     TaskDto updateTask(Long id, CreateOrUpdateTaskRequest request);
     void deleteTask(Long id);
+    TaskDto assignTaskToAvailableUser(Long taskId);
 }

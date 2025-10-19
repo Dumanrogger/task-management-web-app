@@ -117,6 +117,31 @@ public class TaskServiceImpl implements TaskService {
         // 2. Если существует, удаляем ее
         taskRepository.deleteById(id);
     }
+
+    @Override
+    public TaskDto assignTaskToAvailableUser(Long taskId) {
+         // 1. Находим задачу, которую нужно назначить
+    Task task = taskRepository.findById(taskId)
+            .orElseThrow(() -> new RuntimeException("Task not found with id: " + taskId));
+
+    // 2. Находим ВСЕХ доступных пользователей с помощью нашего кастомного метода из UserRepository
+    List<User> availableUsers = userRepository.findAvailableUsers();
+
+    // 3. Проверяем, есть ли хоть один доступный пользователь
+    if (availableUsers.isEmpty()) {
+        throw new RuntimeException("No available users to assign the task.");
+    }
+
+    // 4. Выбираем первого попавшегося доступного пользователя (можно добавить более сложную логику)
+    User userToAssign = availableUsers.get(0);
+
+    // 5. Назначаем задаче этого пользователя и сохраняем изменения
+    task.setAssignedUser(userToAssign);
+    Task savedTask = taskRepository.save(task);
+
+    // 6. Возвращаем обновленную задачу
+    return convertToDto(savedTask);
+    }
     
     // --- КОНЕЦ НОВОГО КОДА ---
 }

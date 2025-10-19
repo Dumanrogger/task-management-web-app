@@ -59,5 +59,9 @@ public class TaskController {
         taskService.deleteTask(id);
         return ResponseEntity.noContent().build();
     }
-    
+    @PostMapping("/{taskId}/assign")
+    public ResponseEntity<TaskDto> assignTask(@PathVariable Long taskId) {
+        TaskDto updatedTask = taskService.assignTaskToAvailableUser(taskId);
+        return ResponseEntity.ok(updatedTask);
+    }
 }
