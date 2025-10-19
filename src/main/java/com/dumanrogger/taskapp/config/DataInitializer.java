@@ -3,6 +3,7 @@ package com.dumanrogger.taskapp.config;
 import java.util.List;
 
 import org.springframework.boot.CommandLineRunner;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Component;
 
 import com.dumanrogger.taskapp.entity.Task;
@@ -15,6 +16,8 @@ public class DataInitializer implements CommandLineRunner {
 
     private final UserRepository userRepository;
     private final TaskRepository taskRepository;
+    // Создаем экземпляр напрямую, чтобы избежать циклической зависимости
+    private final BCryptPasswordEncoder passwordEncoder = new BCryptPasswordEncoder();
 
     public DataInitializer(UserRepository userRepository, TaskRepository taskRepository) {
         this.userRepository = userRepository;
@@ -36,19 +39,19 @@ public class DataInitializer implements CommandLineRunner {
         User user1 = new User();
         user1.setUsername("john_doe");
         user1.setEmail("john.doe@example.com");
-        user1.setHashedPassword("password123");
+        user1.setHashedPassword(passwordEncoder.encode("password123"));
         user1.setAvailabilityStatus("AVAILABLE");
 
         User user2 = new User();
         user2.setUsername("jane_smith");
         user2.setEmail("jane.smith@example.com");
-        user2.setHashedPassword("password456");
+        user2.setHashedPassword(passwordEncoder.encode("password456"));
         user2.setAvailabilityStatus("BUSY");
 
         User user3 = new User();
         user3.setUsername("admin_user");
         user3.setEmail("admin@example.com");
-        user3.setHashedPassword("adminpass");
+        user3.setHashedPassword(passwordEncoder.encode("adminpass"));
         user3.setAvailabilityStatus("AVAILABLE");
 
         List<User> users = userRepository.saveAll(List.of(user1, user2, user3));
